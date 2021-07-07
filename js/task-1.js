@@ -19,29 +19,44 @@ containerUl.insertAdjacentHTML('beforeend', makeGalleryMarkup);
   //    Для того чтобы открыть, необходимо добавить на div.lightbox CSS-класс is-open
 
 const buttonEl = document.querySelector('button'); 
-const imagesEl = document.querySelector('.lightbox__image')
+const imagesEl = document.querySelector('.lightbox__image');
+const backDrop = document.querySelector('.lightbox__overlay');
+
+
+backDrop.addEventListener('click', onClickBackdrop)
+function onClickBackdrop(event) {
+  if (event.target !== event.currentTarget) {
+    return
+  } closeModal()
+}
 
 const lightboxEl = document.querySelector('.lightbox');
 console.log(lightboxEl)
 
-containerUl.addEventListener('click', onClick)
+containerUl.addEventListener('click', onClickOpenModal)
 
-function onClick(event) {
+function onClickOpenModal(event) {
     event.preventDefault();
-    // проверка куда мы клацнули
+    // проверка куда мы кликнули
     if (event.target.nodeName !== 'IMG')  
-    { return; }
+  { return; }
+  
      lightboxEl.classList.add('is-open');
     imagesEl.src = event.target.dataset.source;
     imagesEl.alt = event.target.alt;
-   buttonEl.addEventListener('click', closeModal)
-    return event.target.dataset.source
-   
+  buttonEl.addEventListener('click', closeModal);
+  window.addEventListener('keydown', onCloseEsc)
+     
   }
 
 function closeModal() {
-    
-    lightboxEl.classList.remove('is-open');
+   lightboxEl.classList.remove('is-open');
     imagesEl.src = '';
+window.removeEventListener('keydown', onCloseEsc)
+};
 
+function onCloseEsc(event) {
+  if (event.code === 'Escape') {
+    closeModal();
+ }
 }
